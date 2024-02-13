@@ -10,7 +10,7 @@ fn now_timestamp_ms() -> u64 {
     now.timestamp_millis() as u64
 }
 
-pub(crate) fn next_nonce() -> u64 {
+pub fn next_nonce() -> u64 {
     let nonce = CUR_NONCE.fetch_add(1, Ordering::Relaxed);
     let now_ms = now_timestamp_ms();
     if nonce > now_ms + 1000 {
@@ -25,7 +25,7 @@ pub(crate) fn next_nonce() -> u64 {
 
 pub(crate) const WIRE_DECIMALS: u8 = 8;
 
-pub(crate) fn float_to_string_for_hashing(x: f64) -> String {
+pub fn float_to_string_for_hashing(x: f64) -> String {
     let mut x = format!("{:.*}", WIRE_DECIMALS.into(), x);
     while x.ends_with('0') {
         x.pop();
