@@ -1,5 +1,12 @@
-use crate::info::{AssetPosition, Level, MarginSummary};
 use serde::Deserialize;
+
+use alloy::primitives::Address;
+
+use crate::{
+    info::{AssetPosition, Level, MarginSummary},
+    DailyUserVlm, Delta, FeeSchedule, Leverage, OrderInfo, Referrer, ReferrerState,
+    UserTokenBalance,
+};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -8,6 +15,21 @@ pub struct UserStateResponse {
     pub cross_margin_summary: MarginSummary,
     pub margin_summary: MarginSummary,
     pub withdrawable: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct UserTokenBalanceResponse {
+    pub balances: Vec<UserTokenBalance>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct UserFeesResponse {
+    pub active_referral_discount: String,
+    pub daily_user_vlm: Vec<DailyUserVlm>,
+    pub fee_schedule: FeeSchedule,
+    pub user_add_rate: String,
+    pub user_cross_rate: String,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -19,6 +41,7 @@ pub struct OpenOrdersResponse {
     pub side: String,
     pub sz: String,
     pub timestamp: u64,
+    pub cloid: Option<String>,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -35,6 +58,10 @@ pub struct UserFillsResponse {
     pub start_position: String,
     pub sz: String,
     pub time: u64,
+    pub fee: String,
+    pub tid: u64,
+    pub fee_token: String,
+    pub twap_id: Option<u64>,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -44,6 +71,13 @@ pub struct FundingHistoryResponse {
     pub funding_rate: String,
     pub premium: String,
     pub time: u64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct UserFundingResponse {
+    pub time: u64,
+    pub hash: String,
+    pub delta: Delta,
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -87,4 +121,33 @@ pub struct CandlesSnapshotResponse {
     pub vlm: String,
     #[serde(rename = "n")]
     pub num_trades: u64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct OrderStatusResponse {
+    pub status: String,
+    /// `None` if the order is not found
+    #[serde(default)]
+    pub order: Option<OrderInfo>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct ReferralResponse {
+    pub referred_by: Option<Referrer>,
+    pub cum_vlm: String,
+    pub unclaimed_rewards: String,
+    pub claimed_rewards: String,
+    pub referrer_state: ReferrerState,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct ActiveAssetDataResponse {
+    pub user: Address,
+    pub coin: String,
+    pub leverage: Leverage,
+    pub max_trade_szs: Vec<String>,
+    pub available_to_trade: Vec<String>,
+    pub mark_px: String,
 }

@@ -1,11 +1,14 @@
+use std::collections::HashMap;
+
+use alloy::signers::local::PrivateKeySigner;
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+
 use crate::{
     errors::Error,
     helpers::{float_to_string_for_hashing, uuid_to_hex_string},
     prelude::*,
 };
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Limit {
@@ -15,8 +18,8 @@ pub struct Limit {
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Trigger {
-    pub trigger_px: String,
     pub is_market: bool,
+    pub trigger_px: String,
     pub tpsl: String,
 }
 
@@ -46,20 +49,46 @@ pub struct OrderRequest {
     pub cloid: Option<String>,
 }
 
+#[derive(Debug)]
 pub struct ClientLimit {
     pub tif: String,
 }
 
+#[derive(Debug)]
 pub struct ClientTrigger {
-    pub trigger_px: f64,
     pub is_market: bool,
+    pub trigger_px: f64,
     pub tpsl: String,
 }
 
+#[derive(Debug)]
+pub struct MarketOrderParams<'a> {
+    pub asset: &'a str,
+    pub is_buy: bool,
+    pub sz: f64,
+    pub px: Option<f64>,
+    pub slippage: Option<f64>,
+    pub cloid: Option<Uuid>,
+    pub wallet: Option<&'a PrivateKeySigner>,
+}
+
+#[derive(Debug)]
+pub struct MarketCloseParams<'a> {
+    pub asset: &'a str,
+    pub sz: Option<f64>,
+    pub px: Option<f64>,
+    pub slippage: Option<f64>,
+    pub cloid: Option<Uuid>,
+    pub wallet: Option<&'a PrivateKeySigner>,
+}
+
+#[derive(Debug)]
 pub enum ClientOrder {
     Limit(ClientLimit),
     Trigger(ClientTrigger),
 }
+
+#[derive(Debug)]
 pub struct ClientOrderRequest {
     pub asset: String,
     pub is_buy: bool,

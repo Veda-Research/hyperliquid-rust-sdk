@@ -1,53 +1,32 @@
-use ethers::{
-    contract::{Eip712, EthAbiType},
-    types::{transaction::eip712::Eip712, H256},
-};
-
-use serde::{Deserialize, Serialize};
-
 pub(crate) mod l1 {
-    use super::*;
-    #[derive(Debug, Eip712, Clone, EthAbiType)]
-    #[eip712(
-        name = "Exchange",
-        version = "1",
-        chain_id = 1337,
-        verifying_contract = "0x0000000000000000000000000000000000000000"
-    )]
-    pub(crate) struct Agent {
-        pub(crate) source: String,
-        pub(crate) connection_id: H256,
+    use alloy::{
+        dyn_abi::Eip712Domain,
+        primitives::{Address, B256},
+        sol,
+        sol_types::{eip712_domain, SolStruct},
+    };
+
+    use crate::eip712::Eip712;
+
+    sol! {
+        #[derive(Debug)]
+        struct Agent {
+            string source;
+            bytes32 connectionId;
+        }
     }
-}
 
-pub(crate) mod mainnet {
-    use super::*;
-
-    #[derive(Debug, Eip712, Clone, EthAbiType, Serialize, Deserialize)]
-    #[eip712(
-        name = "Exchange",
-        version = "1",
-        chain_id = 42161,
-        verifying_contract = "0x0000000000000000000000000000000000000000"
-    )]
-    #[serde(rename_all = "camelCase")]
-    pub struct Agent {
-        pub source: String,
-        pub connection_id: H256,
-    }
-}
-
-pub(crate) mod testnet {
-    use super::*;
-    #[derive(Debug, Eip712, Clone, EthAbiType)]
-    #[eip712(
-        name = "Exchange",
-        version = "1",
-        chain_id = 421613,
-        verifying_contract = "0x0000000000000000000000000000000000000000"
-    )]
-    pub(crate) struct Agent {
-        pub(crate) source: String,
-        pub(crate) connection_id: H256,
+    impl Eip712 for Agent {
+        fn domain(&self) -> Eip712Domain {
+            eip712_domain! {
+                name: "Exchange",
+                version: "1",
+                chain_id: 1337,
+                verifying_contract: Address::ZERO,
+            }
+        }
+        fn struct_hash(&self) -> B256 {
+            self.eip712_hash_struct()
+        }
     }
 }
