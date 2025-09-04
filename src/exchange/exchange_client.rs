@@ -12,7 +12,7 @@ use crate::{
     exchange::{
         actions::{
             ApproveAgent, ApproveBuilderFee, BulkCancel, BulkModify, BulkOrder, ClaimRewards,
-            EvmUserModify, ScheduleCancel, SetReferrer, UpdateIsolatedMargin, UpdateLeverage,
+            EvmUserModify, Noop, ScheduleCancel, SetReferrer, UpdateIsolatedMargin, UpdateLeverage,
             UsdSend,
         },
         cancel::{CancelRequest, CancelRequestCloid, ClientCancelRequestCloid},
@@ -81,6 +81,7 @@ pub enum Actions {
     EvmUserModify(EvmUserModify),
     ScheduleCancel(ScheduleCancel),
     ClaimRewards(ClaimRewards),
+    Noop(Noop),
 }
 
 impl Actions {

@@ -255,3 +255,7 @@ impl Eip712 for ApproveBuilderFee {
         keccak256(items.abi_encode())
     }
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Noop;
