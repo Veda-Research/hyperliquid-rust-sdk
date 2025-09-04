@@ -259,3 +259,9 @@ impl Eip712 for ApproveBuilderFee {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Noop;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct ReserveRequestWeight {
+    pub weight: u64,
+}
