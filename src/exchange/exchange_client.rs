@@ -98,6 +98,28 @@ impl Actions {
         }
         Ok(keccak256(bytes))
     }
+
+    pub fn hash_with_expiry(
+        &self,
+        timestamp: u64,
+        vault_address: Option<Address>,
+        expires_after: Option<u64>,
+    ) -> Result<B256> {
+        let mut bytes =
+            rmp_serde::to_vec_named(self).map_err(|e| Error::RmpParse(e.to_string()))?;
+        bytes.extend(timestamp.to_be_bytes());
+        if let Some(vault_address) = vault_address {
+            bytes.push(1);
+            bytes.extend(vault_address);
+        } else {
+            bytes.push(0);
+        }
+        if let Some(expires_after) = expires_after {
+            bytes.push(0);
+            bytes.extend(expires_after.to_be_bytes());
+        }
+        Ok(keccak256(bytes))
+    }
 }
 
 impl ExchangeClient {
