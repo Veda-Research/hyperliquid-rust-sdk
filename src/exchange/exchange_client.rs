@@ -668,6 +668,7 @@ impl ExchangeClient {
 
         let action = Actions::CancelByCloid(BulkCancelCloid {
             cancels: transformed_cancels,
+            fast: true,
         });
 
         let connection_id = action.hash(timestamp, self.vault_address)?;

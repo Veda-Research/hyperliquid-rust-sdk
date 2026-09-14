@@ -96,6 +96,7 @@ pub struct BulkModify {
 #[serde(rename_all = "camelCase")]
 pub struct BulkCancelCloid {
     pub cancels: Vec<CancelRequestCloid>,
+    pub fast: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
